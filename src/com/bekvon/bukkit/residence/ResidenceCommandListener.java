@@ -866,7 +866,6 @@ public class ResidenceCommandListener extends Residence {
 	}
 	if (Residence.getSelectionManager().hasPlacedBoth(player.getName())) {
 	    if (Residence.wg != null && WorldGuardUtil.isSelectionInRegion(player) == null) {
-		Debug.D("here 2 ");
 		rmanager.addResidence(player, args[1], smanager.getPlayerLoc1(player.getName()), smanager.getPlayerLoc2(
 		    player.getName()), resadmin);
 		return true;
@@ -879,13 +878,11 @@ public class ResidenceCommandListener extends Residence {
 
 		Location highLoc = new Location(Residence.getSelectionManager().getPlayerLoc1(player.getName()).getWorld(),
 		    Region.getMaximumPoint().getBlockX(), Region.getMaximumPoint().getBlockY(), Region.getMaximumPoint().getBlockZ());
-		
-		Debug.D("here");
-		
+
 		Residence.getSelectionManager().NewMakeBorders(player, lowLoc, highLoc, true);
-		Residence.getSelectionManager().NewMakeBorders(player, Residence.getSelectionManager().getPlayerLoc1(player.getName()), Residence.getSelectionManager().getPlayerLoc2(player.getName()), false);
+		Residence.getSelectionManager().NewMakeBorders(player, Residence.getSelectionManager().getPlayerLoc1(player.getName()), Residence.getSelectionManager()
+		    .getPlayerLoc2(player.getName()), false);
 	    } else if (Residence.wg == null) {
-		Debug.D("here 3 ");
 		rmanager.addResidence(player, args[1], smanager.getPlayerLoc1(player.getName()), smanager.getPlayerLoc2(player.getName()), resadmin);
 		return true;
 	    } else {

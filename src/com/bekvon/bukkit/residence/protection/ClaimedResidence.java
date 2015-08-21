@@ -110,9 +110,6 @@ public class ClaimedResidence {
 	    if (collideResidence != null) {
 		if (player != null) {
 		    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaCollision", ChatColor.YELLOW + collideResidence));
-
-		    Debug.D("this one?");
-
 		    CuboidArea oldArea = Residence.getResidenceManager().getByName(collideResidence).getAreaArray()[0];
 		    if (oldArea != null)
 			Residence.getSelectionManager().NewMakeBorders(player, oldArea.lowPoints, oldArea.highPoints, true);
@@ -770,9 +767,12 @@ public class ClaimedResidence {
 		reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("TeleportNoFlag"));
 		return;
 	    }
+	    if (!this.perms.playerHas(reqPlayer.getName(), "move", true)) {
+		reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceMoveDeny", this.getName()));
+		return;
+	    }
 	}
 	int distance = isSafeTp(reqPlayer);
-	Debug.D("Will fal for " + distance);
 	if (distance > 6) {
 	    reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("TeleportConfirm").replace("%1", String.valueOf(distance)));
 	    ResidenceCommandListener.teleportMap.put(reqPlayer.getName(), tpLoc);

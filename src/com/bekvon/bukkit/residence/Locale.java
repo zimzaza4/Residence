@@ -51,8 +51,6 @@ public class Locale {
     // Language file
     public static void LoadLang(String lang) {
 
-	Debug.D("writing " + lang);
-
 	File f = new File(Residence.instance.getDataFolder(), "Language" + File.separator + lang + ".yml");
 	YamlConfiguration conf = YamlConfiguration.loadConfiguration(f);
 	CommentedYamlConfiguration writer = new CommentedYamlConfiguration();

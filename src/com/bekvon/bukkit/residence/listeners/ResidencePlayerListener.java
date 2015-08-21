@@ -479,7 +479,8 @@ public class ResidencePlayerListener implements Listener {
 
 	ClaimedResidence res = Residence.getResidenceManager().getByLoc(loc);
 	if (res != null) {
-	    if (event.getCause() == TeleportCause.ENDER_PEARL || event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.NETHER_PORTAL) {
+	    if (event.getCause() == TeleportCause.ENDER_PEARL || event.getCause() == TeleportCause.COMMAND || event.getCause() == TeleportCause.NETHER_PORTAL || event
+		.getCause() == TeleportCause.PLUGIN) {
 		String areaname = res.getName();
 		if (!res.getPermissions().playerHas(player.getName(), "move", true)) {
 		    event.setCancelled(true);
@@ -488,9 +489,9 @@ public class ResidencePlayerListener implements Listener {
 		}
 	    }
 
-	    if (event.getCause() == TeleportCause.PLUGIN) {
-		String areaname = res.getName();
+	    if (event.getCause() == TeleportCause.PLUGIN || event.getCause() == TeleportCause.COMMAND) {
 		if (!res.getPermissions().playerHas(player.getName(), "tp", true) && !player.hasPermission("residence.admin.tp")) {
+		    String areaname = res.getName();
 		    event.setCancelled(true);
 		    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("TeleportDeny", areaname));
 		    return;
