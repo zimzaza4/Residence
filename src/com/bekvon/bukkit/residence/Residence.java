@@ -116,8 +116,7 @@ public class Residence extends JavaPlugin {
     protected Map<String, String> deleteConfirm;
     protected static List<String> resadminToggle;
     private final static String[] validLanguages = { "English", "German", "French", "Hungarian", "Spanish", "Chinese", "Czech", "Brazilian", "Polish", "Lithuanian" };
-    private static OfflinePlayer[] oplayers = null;
-    private static HashMap<String, UUID> UUIDList = new HashMap<String, UUID>();
+    public static HashMap<String, UUID> UUIDList = new HashMap<String, UUID>();
     public static WorldEditPlugin wep = null;
     public static WorldGuardPlugin wg = null;
     public static int wepid;
@@ -993,11 +992,8 @@ public class Residence extends JavaPlugin {
     public static UUID getPlayerUUID(String playername) {
 	Player p = Residence.getServ().getPlayer(playername);
 	if (p == null) {
-
-	    oplayers = Residence.getServ().getOfflinePlayers();
-
 	    if (UUIDList.size() == 0) {
-		for (OfflinePlayer player : oplayers) {
+		for (OfflinePlayer player : Residence.getServ().getOfflinePlayers()) {
 		    UUIDList.put(player.getName().toLowerCase(), player.getUniqueId());
 		}
 	    }

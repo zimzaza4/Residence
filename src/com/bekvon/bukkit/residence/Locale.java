@@ -10,8 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.bekvon.bukkit.residence.utils.Debug;
-
 public class Locale {
     public static String GetConfigString(String path, String text, CommentedYamlConfiguration writer, YamlConfiguration conf, Boolean colorize) {
 	conf.addDefault(path, text);
@@ -103,6 +101,10 @@ public class Locale {
 	GetConfigString("Language.AreaSubzoneCollision", "Area collides with subzone %1", writer, conf, true);
 	GetConfigString("Language.AreaNonExist", "No such area exists.", writer, conf, true);
 	GetConfigString("Language.AreaInvalidName", "Invalid Area Name...", writer, conf, true);
+	GetConfigString("Language.AreaToSmallTotal", "Selected area smaller than allowed minimal (%1)", writer, conf, true);
+	GetConfigString("Language.AreaToSmallX", "Your x selection length is too small. %1 allowed %2", writer, conf, true);
+	GetConfigString("Language.AreaToSmallY", "Your selection height is too small. %1 allowed %2", writer, conf, true);
+	GetConfigString("Language.AreaToSmallZ", "Your z selection length is too small. %1 allowed %2", writer, conf, true);
 	GetConfigString("Language.AreaRename", "Renamed area %1 to %2", writer, conf, true);
 	GetConfigString("Language.AreaRemove", "Removed area %1...", writer, conf, true);
 	GetConfigString("Language.AreaRemoveLast", "Cannot remove the last area in a residence.", writer, conf, true);

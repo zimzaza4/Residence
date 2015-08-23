@@ -45,10 +45,15 @@ public class ConfigManager {
     protected int VisualizerRange;
     protected int VisualizerShowFor;
     protected int VisualizerUpdateInterval;
+    protected int MinimalResSize;
+    protected int MinimalResX;
+    protected int MinimalResY;
+    protected int MinimalResZ;
     protected boolean flagsInherit;
     protected ChatColor chatColor;
     protected boolean chatEnable;
     protected boolean actionBar;
+    protected boolean ActionBarOnSelection;
     protected boolean visualizer;
     protected int minMoveUpdate;
     protected FlagPermissions globalCreatorDefaults;
@@ -179,6 +184,12 @@ public class ConfigManager {
 	    "Increasing this will allow players to move further in movement restricted zones before they are teleported out.");
 	minMoveUpdate = GetConfigInt("Global.MoveCheckInterval", 500, writer, conf);
 
+	writer.addComment("Global.Size.MinimalSize", "Minimal size of residence in blocks", "1000 is 10x10x10 residence size");
+	MinimalResSize = GetConfigInt("Global.Size.MinimalSize", 1000, writer, conf);
+	MinimalResX = GetConfigInt("Global.Size.MinimalX", 10, writer, conf);
+	MinimalResY = GetConfigInt("Global.Size.MinimalY", 10, writer, conf);
+	MinimalResZ = GetConfigInt("Global.Size.MinimalZ", 10, writer, conf);
+
 	writer.addComment("Global.SaveInterval", "The interval, in minutes, between residence saves.");
 	autoSaveInt = GetConfigInt("Global.SaveInterval", 10, writer, conf);
 
@@ -215,8 +226,9 @@ public class ConfigManager {
 	writer.addComment("Global.ResidenceChatEnable", "Enable or disable residence chat channels.");
 	chatEnable = GetConfigBoolean("Global.ResidenceChatEnable", true, writer, conf);
 
-	writer.addComment("Global.UseActionBar", "True for ActionBar - new component in 1.8", "False for old Messaging in chat enter/leave Residence messages");
-	actionBar = GetConfigBoolean("Global.UseActionBar", true, writer, conf);
+	writer.addComment("Global.ActionBar.General", "True for ActionBar - new component in 1.8", "False for old Messaging in chat enter/leave Residence messages");
+	actionBar = GetConfigBoolean("Global.ActionBar.General", true, writer, conf);
+	ActionBarOnSelection = GetConfigBoolean("Global.ActionBar.ShowOnSelection", true, writer, conf);
 
 	writer.addComment("Global.ResidenceChatColor", "Color of residence chat.");
 	try {
@@ -366,6 +378,22 @@ public class ConfigManager {
 	return legacyperms;
     }
 
+    public int getMinimalResSize() {
+	return MinimalResSize;
+    }
+
+    public int getMinimalResX() {
+	return MinimalResX;
+    }
+
+    public int getMinimalResY() {
+	return MinimalResY;
+    }
+
+    public int getMinimalResZ() {
+	return MinimalResZ;
+    }
+
     public String getDefaultGroup() {
 	return defaultGroup;
     }
@@ -436,6 +464,10 @@ public class ConfigManager {
 
     public boolean useActionBar() {
 	return actionBar;
+    }
+
+    public boolean useActionBarOnSelection() {
+	return ActionBarOnSelection;
     }
 
     public ChatColor getChatColor() {

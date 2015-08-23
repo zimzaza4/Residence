@@ -44,6 +44,7 @@ import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.utils.ActionBar;
+import com.bekvon.bukkit.residence.utils.Debug;
 
 /**
  * 
@@ -57,6 +58,9 @@ public class ResidencePlayerListener implements Listener {
     protected int minUpdateTime;
     protected boolean chatenabled;
     protected List<String> playerToggleChat;
+
+    protected Double debugingAmount = 0.0;
+    protected Double debugingSum = 0.0;
 
     public ResidencePlayerListener() {
 	currentRes = new HashMap<String, String>();
@@ -89,6 +93,8 @@ public class ResidencePlayerListener implements Listener {
 	lastUpdate.remove(pname);
 	lastOutsideLoc.remove(pname);
 	Residence.getChatManager().removeFromChannel(pname);
+
+	Residence.UUIDList.put(pname, event.getPlayer().getUniqueId());
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -501,10 +507,10 @@ public class ResidencePlayerListener implements Listener {
 	//handleNewLocation(player, loc, false);
     }
 
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onPlayerMove(final PlayerMoveEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
 
-	final Player player = event.getPlayer();
+	Player player = event.getPlayer();
 	if (player == null)
 	    return;
 
@@ -518,27 +524,21 @@ public class ResidencePlayerListener implements Listener {
 	    return;
 	}
 	lastUpdate.put(name, now);
-	if (event.getFrom().getWorld() == event.getTo().getWorld()) {
-	    Location locfrom = event.getFrom();
-	    Location locto = event.getTo();
-	    if (locfrom.getX() == locto.getX() && locfrom.getY() == locto.getY() && locfrom.getZ() == locto.getZ())
-		return;
+	Location locfrom = event.getFrom();
+	Location locto = event.getTo();
+	if (locfrom.getX() == locto.getX() && locfrom.getY() == locto.getY() && locfrom.getZ() == locto.getZ())
+	    return;
 
-	    if (event.getFrom().distanceSquared(event.getTo()) == 0) {
-		return;
-	    }
-	}
-	handleNewLocation(player, event.getTo(), true);
+	handleNewLocation(player, locto, true);
     }
 
-    public void handleNewLocation(final Player player, Location loc, boolean move) {
+    public void handleNewLocation(Player player, Location loc, boolean move) {
 
 	String pname = player.getName();
-
 	ClaimedResidence res = Residence.getResidenceManager().getByLoc(loc);
-	final ClaimedResidence orres = res;
+
+	ClaimedResidence orres = res;
 	String areaname = null;
-	boolean chatchange = false;
 	String subzone = null;
 	if (res != null) {
 	    areaname = res.getName();
@@ -556,6 +556,7 @@ public class ResidencePlayerListener implements Listener {
 		currentRes.remove(pname);
 	    }
 	}
+
 	if (res == null) {
 	    lastOutsideLoc.put(pname, loc);
 	    if (ResOld != null) {
@@ -588,7 +589,7 @@ public class ResidencePlayerListener implements Listener {
 
 	if (move) {
 	    if (!res.getPermissions().playerHas(pname, "move", true) && !Residence.isResAdminOn(player)) {
-		final Location lastLoc = lastOutsideLoc.get(pname);
+		Location lastLoc = lastOutsideLoc.get(pname);
 		if (lastLoc != null) {
 		    player.teleport(lastLoc);
 		} else {
@@ -602,7 +603,9 @@ public class ResidencePlayerListener implements Listener {
 		return;
 	    }
 	}
+
 	lastOutsideLoc.put(pname, loc);
+	boolean chatchange = false;
 	if (!currentRes.containsKey(pname) || ResOld != res) {
 	    currentRes.put(pname, areaname);
 	    if (subzone == null) {
@@ -677,15 +680,19 @@ public class ResidencePlayerListener implements Listener {
 	    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 		String resname = Residence.getPlayerListener().getCurrentResidenceName(player.getName());
 		ClaimedResidence res = null;
-		if (resname != null) {
-		    res = Residence.getResidenceManager().getByName(resname);
-		}
-		if (res != null && res.getPermissions().has("healing", false)) {
-		    Damageable damage = player;
-		    double health = damage.getHealth();
-		    if (health < player.getMaxHealth() && !player.isDead()) {
-			player.setHealth(health + 1);
-		    }
+
+		if (resname == null)
+		    continue;
+
+		res = Residence.getResidenceManager().getByName(resname);
+
+		if (!res.getPermissions().has("healing", false))
+		    continue;
+
+		Damageable damage = player;
+		double health = damage.getHealth();
+		if (health < player.getMaxHealth() && !player.isDead()) {
+		    player.setHealth(health + 1);
 		}
 	    }
 	} catch (Exception ex) {

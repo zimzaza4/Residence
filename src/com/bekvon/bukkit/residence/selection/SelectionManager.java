@@ -7,7 +7,10 @@ package com.bekvon.bukkit.residence.selection;
 
 import com.bekvon.bukkit.residence.Residence;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
+import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
+import com.bekvon.bukkit.residence.utils.ActionBar;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,12 +51,16 @@ public class SelectionManager {
     public void placeLoc1(Player player, Location loc) {
 	if (loc != null) {
 	    playerLoc1.put(player.getName(), loc);
+	    if (hasPlacedBoth(player.getName()))
+		showSelectionInfoInActionBar(player);
 	}
     }
 
     public void placeLoc2(Player player, Location loc) {
 	if (loc != null) {
 	    playerLoc2.put(player.getName(), loc);
+	    if (hasPlacedBoth(player.getName()))
+		showSelectionInfoInActionBar(player);
 	}
     }
 
@@ -67,6 +74,25 @@ public class SelectionManager {
 
     public boolean hasPlacedBoth(String player) {
 	return (playerLoc1.containsKey(player) && playerLoc2.containsKey(player));
+    }
+
+    public void showSelectionInfoInActionBar(Player player) {
+
+	if (!Residence.getConfigManager().useActionBarOnSelection())
+	    return;
+
+	String pname = player.getName();
+	CuboidArea cuboidArea = new CuboidArea(getPlayerLoc1(pname), getPlayerLoc2(pname));
+
+	String Message = ChatColor.YELLOW + Residence.getLanguage().getPhrase("Selection.Total.Size") + ":" + ChatColor.DARK_AQUA + " " + cuboidArea.getSize();
+
+	PermissionGroup group = Residence.getPermissionManager().getGroup(player);
+	if (Residence.getConfigManager().enableEconomy())
+	    Message += " " + ChatColor.YELLOW + Residence.getLanguage().getPhrase("Land.Cost") + ":" + ChatColor.DARK_AQUA + " " + ((int) Math.ceil(
+		(double) cuboidArea.getSize() * group.getCostPerBlock()));
+
+	ActionBar.send(player, Message);
+
     }
 
     public void showSelectionInfo(Player player) {
@@ -651,10 +677,10 @@ public class SelectionManager {
 	playerLoc2.put(player.getName(), area.getLowLoc());
     }
 
-    public void contract(Player player, int amount) {
+    public boolean contract(Player player, int amount, boolean resadmin) {
 	if (!hasPlacedBoth(player.getName())) {
 	    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("SelectPoints"));
-	    return;
+	    return false;
 	}
 	Direction d = this.getDirection(player);
 	if (d == null) {
@@ -710,8 +736,12 @@ public class SelectionManager {
 	    break;
 	}
 
+	if (!ClaimedResidence.CheckAreaSize(player, area, resadmin))
+	    return false;
+
 	playerLoc1.put(player.getName(), area.getHighLoc());
 	playerLoc2.put(player.getName(), area.getLowLoc());
+	return true;
     }
 
     private Direction getDirection(Player player) {

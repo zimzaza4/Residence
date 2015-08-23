@@ -27,7 +27,6 @@ import com.bekvon.bukkit.residence.protection.CuboidArea;
 import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.selection.WorldGuardUtil;
 import com.bekvon.bukkit.residence.spout.ResidenceSpout;
-import com.bekvon.bukkit.residence.utils.Debug;
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
@@ -702,7 +701,8 @@ public class ResidenceCommandListener extends Residence {
 	if (amount < 0)
 	    amount = amount * -1;
 
-	smanager.contract(player, amount);
+	if (!smanager.contract(player, amount, resadmin))
+	    return true;
 
 	if (Residence.getSelectionManager().hasPlacedBoth(player.getName())) {
 	    WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");

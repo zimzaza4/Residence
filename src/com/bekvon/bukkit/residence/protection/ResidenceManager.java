@@ -30,6 +30,7 @@ import com.bekvon.bukkit.residence.event.ResidenceDeleteEvent.DeleteCause;
 import com.bekvon.bukkit.residence.event.ResidenceRenameEvent;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.text.help.InformationPager;
+import com.bekvon.bukkit.residence.utils.Debug;
 
 /**
  * 
@@ -50,17 +51,20 @@ public class ResidenceManager {
 	ClaimedResidence res = null;
 	String world = loc.getWorld().getName();
 	ChunkRef chunk = new ChunkRef(loc);
-	if (chunkResidences.containsKey(world)) {
-	    if (chunkResidences.get(world).containsKey(chunk)) {
-		for (String key : chunkResidences.get(world).get(chunk)) {
-		    ClaimedResidence entry = residences.get(key);
-		    if (entry.containsLoc(loc)) {
-			res = entry;
-			break;
-		    }
+	//if (chunkResidences.containsKey(world)) {
+
+	Map<ChunkRef, List<String>> ChunkMap = chunkResidences.get(world);
+
+	if (ChunkMap.containsKey(chunk)) {
+	    for (String key : ChunkMap.get(chunk)) {
+		ClaimedResidence entry = residences.get(key);
+		if (entry.containsLoc(loc)) {
+		    res = entry;
+		    break;
 		}
 	    }
 	}
+	//}
 	if (res == null)
 	    return null;
 

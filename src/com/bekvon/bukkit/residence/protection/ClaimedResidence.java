@@ -16,8 +16,6 @@ import com.bekvon.bukkit.residence.itemlist.ItemList.ListType;
 import com.bekvon.bukkit.residence.itemlist.ResidenceItemList;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.text.help.InformationPager;
-import com.bekvon.bukkit.residence.utils.Debug;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -75,6 +73,39 @@ public class ClaimedResidence {
 	return addArea(null, area, name, true);
     }
 
+    public static boolean CheckAreaSize(Player player, CuboidArea area, boolean resadmin) {
+	if (!resadmin && area.getSize() < Residence.getConfigManager().getMinimalResSize()) {
+	    if (player != null) {
+		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaToSmallTotal", String.valueOf(Residence.getConfigManager()
+		    .getMinimalResSize())));
+	    }
+	    return false;
+	}
+
+	if (!resadmin && area.getXSize() < Residence.getConfigManager().getMinimalResX()) {
+	    if (player != null) {
+		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaToSmallX", String.valueOf(area.getXSize()) + "." + String.valueOf(Residence
+		    .getConfigManager().getMinimalResX())));
+	    }
+	    return false;
+	}
+	if (!resadmin && area.getYSize() < Residence.getConfigManager().getMinimalResY()) {
+	    if (player != null) {
+		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaToSmallY", String.valueOf(area.getYSize()) + "." + String.valueOf(Residence
+		    .getConfigManager().getMinimalResY())));
+	    }
+	    return false;
+	}
+	if (!resadmin && area.getZSize() < Residence.getConfigManager().getMinimalResZ()) {
+	    if (player != null) {
+		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaToSmallZ", String.valueOf(area.getZSize()) + "." + String.valueOf(Residence
+		    .getConfigManager().getMinimalResZ())));
+	    }
+	    return false;
+	}
+	return true;
+    }
+
     public boolean addArea(Player player, CuboidArea area, String name, boolean resadmin) {
 	if (!Residence.validName(name)) {
 	    if (player != null) {
@@ -88,6 +119,10 @@ public class ClaimedResidence {
 	    }
 	    return false;
 	}
+
+	if (!CheckAreaSize(player, area, resadmin))
+	    return false;
+
 	if (!resadmin && Residence.getConfigManager().getEnforceAreaInsideArea() && this.getParent() == null) {
 	    boolean inside = false;
 	    for (CuboidArea are : areas.values()) {
@@ -710,6 +745,9 @@ public class ClaimedResidence {
 	    return 0;
 
 	if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR)
+	    return 0;
+
+	if (tpLoc == null)
 	    return 0;
 
 	Location tempLoc = new Location(tpLoc.getWorld(), tpLoc.getX(), tpLoc.getY(), tpLoc.getZ());
