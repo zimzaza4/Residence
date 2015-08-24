@@ -27,7 +27,6 @@ public class Locale {
 	return text;
     }
 
-
     public static List<String> ColorsArray(List<String> text, Boolean colorize) {
 	List<String> temp = new ArrayList<String>();
 	for (String part : text) {
@@ -213,10 +212,15 @@ public class Locale {
 	GetConfigString("Language.SelectPoint", "Placed %1 Selection Point", writer, conf, true);
 	GetConfigString("Language.ResidenceChat", "Residence chat toggled %1", writer, conf, true);
 	GetConfigString("Language.ResidenceMoveDeny", "You dont have movement permission for Residence %1", writer, conf, true);
+	GetConfigString("Language.ResidenceFlagDeny", "You dont have %1 permission for Residence %2", writer, conf, true);
 	GetConfigString("Language.TeleportDeny", "You dont have teleport access.", writer, conf, true);
 	GetConfigString("Language.TeleportSuccess", "Teleported!", writer, conf, true);
 	GetConfigString("Language.TeleportConfirm",
 	    "&eThis teleport is not safe, you will fall for &c%1 &eblocks. Use &2/res tpconfirm &eto perform teleportation anyways.", writer, conf, true);
+	GetConfigString("Language.TeleportStarted",
+	    "&eTeleportation to %1 started, don't move for next %2 sec.", writer, conf, true);
+	GetConfigString("Language.TeleportCanceled",
+	    "&eTeleportation canceled!", writer, conf, true);
 	GetConfigString("Language.NoTeleportConfirm", "There is no teleports waiting for confirmation!", writer, conf, true);
 	GetConfigString("Language.TeleportNear", "Teleported to near residence.", writer, conf, true);
 	GetConfigString("Language.TeleportNoFlag", "You dont have teleport access for that residence.", writer, conf, true);
@@ -365,9 +369,10 @@ public class Locale {
 	GetConfigArray("CommandHelp.SubCommands.res.SubCommands.removeall.Info", Arrays.asList("Usage: /res removeall [owner]",
 	    "Removes all residences owned by a specific player.'",
 	    "Requires /resadmin if you use it on anyone besides yourself."), writer, conf, true);
-	
+
 	GetConfigString("CommandHelp.SubCommands.res.SubCommands.confirm.Description", "Confirms removal of a residence.", writer, conf, true);
-	GetConfigArray("CommandHelp.SubCommands.res.SubCommands.confirm.info", Arrays.asList("Usage: /res confirm", "Confirms removal of a residence."), writer, conf, true);
+	GetConfigArray("CommandHelp.SubCommands.res.SubCommands.confirm.info", Arrays.asList("Usage: /res confirm", "Confirms removal of a residence."), writer, conf,
+	    true);
 
 	GetConfigString("CommandHelp.SubCommands.res.SubCommands.subzone.Description", "Create subzones in residences.", writer, conf, true);
 	GetConfigArray("CommandHelp.SubCommands.res.SubCommands.subzone.Info",

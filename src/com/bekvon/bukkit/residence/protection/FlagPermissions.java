@@ -141,7 +141,13 @@ public class FlagPermissions {
 
 	/* New flags */
 	addFlag("animalkilling");
+	addFlag("mobkilling");
+	addFlag("vehicledestroy");
 	addFlag("trade");
+	
+	addFlag("leash");
+	addFlag("shear");
+	addFlag("nofly");
 
 	addResidenceOnlyFlag("trample");
 	addResidenceOnlyFlag("pvp");
@@ -179,6 +185,8 @@ public class FlagPermissions {
 	addFlagToFlagGroup("trusted", "container");
 	addFlagToFlagGroup("trusted", "bucket");
 	addFlagToFlagGroup("trusted", "move");
+	addFlagToFlagGroup("trusted", "leash");
+	addFlagToFlagGroup("trusted", "animalkilling");
 	addFlagToFlagGroup("fire", "ignite");
 	addFlagToFlagGroup("fire", "firespread");
 	addMaterialToUseFlag(Material.DIODE, "diode");

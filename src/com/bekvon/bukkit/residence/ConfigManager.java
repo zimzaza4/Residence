@@ -49,6 +49,7 @@ public class ConfigManager {
     protected int MinimalResX;
     protected int MinimalResY;
     protected int MinimalResZ;
+    protected int TeleportDelay;
     protected boolean flagsInherit;
     protected ChatColor chatColor;
     protected boolean chatEnable;
@@ -183,6 +184,10 @@ public class ConfigManager {
 	    "Reducing this will increase the load on the server.",
 	    "Increasing this will allow players to move further in movement restricted zones before they are teleported out.");
 	minMoveUpdate = GetConfigInt("Global.MoveCheckInterval", 500, writer, conf);
+
+	writer.addComment("Global.Tp.TeleportDelay", "The interval, in seconds, for teleportation.",
+	    "Use 0 to disable");
+	TeleportDelay = GetConfigInt("Global.Tp.TeleportDelay", 3, writer, conf);
 
 	writer.addComment("Global.Size.MinimalSize", "Minimal size of residence in blocks", "1000 is 10x10x10 residence size");
 	MinimalResSize = GetConfigInt("Global.Size.MinimalSize", 1000, writer, conf);
@@ -372,6 +377,10 @@ public class ConfigManager {
 
     public ParticleEffects getOverlapSides() {
 	return OverlapSides;
+    }
+
+    public int getTeleportDelay() {
+	return TeleportDelay;
     }
 
     public boolean useLegacyPermissions() {

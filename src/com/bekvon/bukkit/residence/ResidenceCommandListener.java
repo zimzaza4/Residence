@@ -6,6 +6,7 @@ package com.bekvon.bukkit.residence;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,7 +33,8 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 
 public class ResidenceCommandListener extends Residence {
 
-    public static HashMap<String, Location> teleportMap = new HashMap<String, Location>();
+    public static HashMap<String, ClaimedResidence> teleportMap = new HashMap<String, ClaimedResidence>();
+    public static List<String> teleportDelayMap = new ArrayList<String>();
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 	ResidenceCommandEvent cevent = new ResidenceCommandEvent(command.getName(), args, sender);
@@ -521,11 +523,9 @@ public class ResidenceCommandListener extends Residence {
 	    if (args.length != 1) {
 		return false;
 	    }
-
 	    if (teleportMap.containsKey(player.getName())) {
-		player.teleport(teleportMap.get(player.getName()));
+		teleportMap.get(player.getName()).tpToResidence(player, player, resadmin);
 		teleportMap.remove(player.getName());
-		player.sendMessage(ChatColor.GREEN + language.getPhrase("TeleportSuccess"));
 	    } else
 		player.sendMessage(ChatColor.RED + language.getPhrase("NoTeleportConfirm"));
 	    return true;

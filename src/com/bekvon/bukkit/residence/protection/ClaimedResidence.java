@@ -16,6 +16,7 @@ import com.bekvon.bukkit.residence.itemlist.ItemList.ListType;
 import com.bekvon.bukkit.residence.itemlist.ResidenceItemList;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.text.help.InformationPager;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -790,7 +791,7 @@ public class ClaimedResidence {
 	return false;
     }
 
-    public void tpToResidence(Player reqPlayer, Player targetPlayer, boolean resadmin) {
+    public void tpToResidence(Player reqPlayer, final Player targetPlayer, boolean resadmin) {
 	if (!resadmin) {
 	    PermissionGroup group = Residence.getPermissionManager().getGroup(reqPlayer);
 	    if (!group.hasTpAccess()) {
@@ -810,33 +811,56 @@ public class ClaimedResidence {
 		return;
 	    }
 	}
-	int distance = isSafeTp(reqPlayer);
-	if (distance > 6) {
-	    reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("TeleportConfirm").replace("%1", String.valueOf(distance)));
-	    ResidenceCommandListener.teleportMap.put(reqPlayer.getName(), tpLoc);
-	    return;
+
+	if (!ResidenceCommandListener.teleportMap.containsKey(targetPlayer.getName())) {
+	    int distance = isSafeTp(reqPlayer);
+	    if (distance > 6) {
+		reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("TeleportConfirm", String.valueOf(distance)));
+		ResidenceCommandListener.teleportMap.put(reqPlayer.getName(), this);
+		return;
+	    }
+	}
+
+	if (Residence.getConfigManager().getTeleportDelay() > 0) {
+	    reqPlayer.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("TeleportStarted", this.getName() + "." + Residence.getConfigManager()
+		.getTeleportDelay()));
+	    ResidenceCommandListener.teleportDelayMap.add(reqPlayer.getName());
 	}
 
 	if (tpLoc != null) {
-	    ResidenceTPEvent tpevent = new ResidenceTPEvent(this, tpLoc, targetPlayer, reqPlayer);
-	    Residence.getServ().getPluginManager().callEvent(tpevent);
-	    if (!tpevent.isCancelled()) {
-		targetPlayer.teleport(tpLoc);
-		targetPlayer.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("TeleportSuccess"));
-	    }
+	    performTp(tpLoc, targetPlayer, reqPlayer, false);
 	} else {
 	    CuboidArea area = areas.values().iterator().next();
 	    if (area == null) {
 		reqPlayer.sendMessage(ChatColor.RED + "Could not find area to teleport to...");
+		ResidenceCommandListener.teleportDelayMap.remove(targetPlayer.getName());
 		return;
 	    }
-	    Location targloc = this.getOutsideFreeLoc(area.getHighLoc());
-	    ResidenceTPEvent tpevent = new ResidenceTPEvent(this, targloc, targetPlayer, reqPlayer);
-	    Residence.getServ().getPluginManager().callEvent(tpevent);
-	    if (!tpevent.isCancelled()) {
-		targetPlayer.teleport(targloc);
-		targetPlayer.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TeleportNear"));
-	    }
+	    final Location targloc = this.getOutsideFreeLoc(area.getHighLoc());
+	    performTp(targloc, targetPlayer, reqPlayer, true);
+	}
+    }
+
+    private void performTp(final Location targloc, final Player targetPlayer, Player reqPlayer, final boolean near) {
+	ResidenceTPEvent tpevent = new ResidenceTPEvent(this, targloc, targetPlayer, reqPlayer);
+	Residence.getServ().getPluginManager().callEvent(tpevent);
+	if (!tpevent.isCancelled()) {
+	    Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Residence.instance, new Runnable() {
+		public void run() {
+		    if (!ResidenceCommandListener.teleportDelayMap.contains(targetPlayer.getName()) && Residence.getConfigManager().getTeleportDelay() > 0)
+			return;
+		    else if (ResidenceCommandListener.teleportDelayMap.contains(targetPlayer.getName()))
+			ResidenceCommandListener.teleportDelayMap.remove(targetPlayer.getName());
+		    else
+			return;
+		    targetPlayer.teleport(targloc);
+		    if (near)
+			targetPlayer.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TeleportNear"));
+		    else
+			targetPlayer.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TeleportSuccess"));
+
+		}
+	    }, Residence.getConfigManager().getTeleportDelay() * 20L);
 	}
     }
 

@@ -47,6 +47,7 @@ import org.bukkit.entity.Sheep;
 import org.bukkit.entity.Snowman;
 import org.bukkit.entity.Squid;
 import org.bukkit.entity.Tameable;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Wolf;
 import org.bukkit.entity.Slime;
@@ -55,9 +56,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ExplosionPrimeEvent;
+import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
 
 /**
  *
@@ -114,6 +117,11 @@ public class ResidenceEntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void AnimalKilling(EntityDamageByEntityEvent event) {
+
+	Entity entity = event.getEntity();
+	if (!isAnimal(entity))
+	    return;
+
 	Entity damager = event.getDamager();
 
 	if (!(damager instanceof Arrow) && !(damager instanceof Player))
@@ -136,17 +144,117 @@ public class ResidenceEntityListener implements Listener {
 	if (Residence.isResAdminOn(cause))
 	    return;
 
-	Entity entity = event.getEntity();
 	ClaimedResidence res = Residence.getResidenceManager().getByLoc(entity.getLocation());
 
 	if (res == null)
 	    return;
 
-	if (isAnimal(entity)) {
-	    if (!res.getPermissions().playerHas(cause.getName(), "animalkilling", true)) {
-		cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("NoPermission"));
+	if (!res.getPermissions().playerHas(cause.getName(), "animalkilling", true)) {
+	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "AnimalKilling." + res.getName()));
+	    event.setCancelled(true);
+	}
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void AnimalKilling(VehicleDestroyEvent event) {
+
+	Vehicle vehicle = event.getVehicle();
+
+	Entity damager = event.getAttacker();
+
+	if (damager instanceof Projectile && !(((Projectile) damager).getShooter() instanceof Player) || !(damager instanceof Player)) {
+	    FlagPermissions perms = Residence.getPermsByLoc(vehicle.getLocation());
+	    if (!perms.has("vehicledestroy", true)) {
 		event.setCancelled(true);
+		return;
 	    }
+	}
+
+	Player cause = null;
+
+	if (damager instanceof Player) {
+	    cause = (Player) damager;
+	} else {
+	    cause = (Player) ((Projectile) damager).getShooter();
+	}
+
+	if (cause == null)
+	    return;
+
+	if (Residence.isResAdminOn(cause))
+	    return;
+
+	ClaimedResidence res = Residence.getResidenceManager().getByLoc(vehicle.getLocation());
+
+	if (res == null)
+	    return;
+
+	if (!res.getPermissions().playerHas(cause.getName(), "vehicledestroy", true)) {
+	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "vehicledestroy." + res.getName()));
+	    event.setCancelled(true);
+	}
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void MonsterKilling(EntityDamageByEntityEvent event) {
+
+	Entity entity = event.getEntity();
+	if (!isMonster(entity))
+	    return;
+
+	Entity damager = event.getDamager();
+
+	if (!(damager instanceof Arrow) && !(damager instanceof Player))
+	    return;
+
+	if (damager instanceof Arrow && !(((Arrow) damager).getShooter() instanceof Player))
+	    return;
+
+	Player cause = null;
+
+	if (damager instanceof Player) {
+	    cause = (Player) damager;
+	} else {
+	    cause = (Player) ((Arrow) damager).getShooter();
+	}
+
+	if (cause == null)
+	    return;
+
+	if (Residence.isResAdminOn(cause))
+	    return;
+
+	ClaimedResidence res = Residence.getResidenceManager().getByLoc(entity.getLocation());
+
+	if (res == null)
+	    return;
+
+	if (!res.getPermissions().playerHas(cause.getName(), "mobkilling", true)) {
+	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "MobKilling." + res.getName()));
+	    event.setCancelled(true);
+	}
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void AnimalLeash(PlayerLeashEntityEvent event) {
+	Player player = event.getPlayer();
+
+	Entity entity = event.getEntity();
+
+	if (!isAnimal(entity) && !(player instanceof Player))
+	    return;
+
+	if (Residence.isResAdminOn(player))
+	    return;
+
+	ClaimedResidence res = Residence.getResidenceManager().getByLoc(entity.getLocation());
+
+	if (res == null)
+	    return;
+
+	if (!res.getPermissions().playerHas(player.getName(), "leash", true)) {
+	    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "Leash." + res.getName()));
+	    event.setCancelled(true);
 	}
     }
 
