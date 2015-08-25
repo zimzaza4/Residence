@@ -649,22 +649,17 @@ public class ResidenceCommandListener extends Residence {
 	smanager.modify(player, false, amount);
 
 	if (Residence.getSelectionManager().hasPlacedBoth(player.getName())) {
-	    WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-	    if (wep != null) {
-		if (wep.getConfig().getInt("wand-item") == Residence.getConfigManager().selectionToolId) {
+	    if (Residence.wep != null) {
+		if (Residence.wepid == Residence.getConfigManager().selectionToolId) {
 		    smanager.worldEdit(player);
 		}
 	    }
-	    if (Residence.getSelectionManager().hasPlacedBoth(player.getName())) {
-		if (res != null) {
-		    res.replaceArea(player, new CuboidArea(Residence.getSelectionManager().getPlayerLoc1(player.getName()), Residence.getSelectionManager().getPlayerLoc2(
-			player.getName())), areaName,
-			resadmin);
-		}
-	    } else {
-		player.sendMessage(ChatColor.RED + language.getPhrase("SelectPoints"));
-	    }
+	    res.replaceArea(player, new CuboidArea(Residence.getSelectionManager().getPlayerLoc1(player.getName()), Residence.getSelectionManager().getPlayerLoc2(
+		player.getName())), areaName,
+		resadmin);
 	    return true;
+	} else {
+	    player.sendMessage(ChatColor.RED + language.getPhrase("SelectPoints"));
 	}
 	return false;
     }
@@ -705,22 +700,18 @@ public class ResidenceCommandListener extends Residence {
 	    return true;
 
 	if (Residence.getSelectionManager().hasPlacedBoth(player.getName())) {
-	    WorldEditPlugin wep = (WorldEditPlugin) server.getPluginManager().getPlugin("WorldEdit");
-	    if (wep != null) {
-		if (wep.getConfig().getInt("wand-item") == Residence.getConfigManager().selectionToolId) {
+	    if (Residence.wep != null) {
+		if (Residence.wepid == Residence.getConfigManager().selectionToolId) {
 		    smanager.worldEdit(player);
 		}
 	    }
-	    if (Residence.getSelectionManager().hasPlacedBoth(player.getName())) {
-		if (res != null) {
-		    res.replaceArea(player, new CuboidArea(Residence.getSelectionManager().getPlayerLoc1(player.getName()), Residence.getSelectionManager().getPlayerLoc2(
-			player.getName())), areaName,
-			resadmin);
-		}
-	    } else {
-		player.sendMessage(ChatColor.RED + language.getPhrase("SelectPoints"));
-	    }
+	    res.replaceArea(player, new CuboidArea(Residence.getSelectionManager().getPlayerLoc1(player.getName()), Residence.getSelectionManager().getPlayerLoc2(
+		player.getName())), areaName, resadmin);
+	    Residence.getSelectionManager().MakeBorders(player, Residence.getSelectionManager().getPlayerLoc1(player.getName()), Residence.getSelectionManager()
+		.getPlayerLoc2(player.getName()), false);
 	    return true;
+	} else {
+	    player.sendMessage(ChatColor.RED + language.getPhrase("SelectPoints"));
 	}
 	return false;
     }

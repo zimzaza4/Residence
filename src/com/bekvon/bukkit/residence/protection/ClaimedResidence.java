@@ -147,10 +147,11 @@ public class ClaimedResidence {
 		if (player != null) {
 		    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaCollision", ChatColor.YELLOW + collideResidence));
 		    CuboidArea oldArea = Residence.getResidenceManager().getByName(collideResidence).getAreaArray()[0];
-		    if (oldArea != null)
+		    if (oldArea != null) {
 			Residence.getSelectionManager().NewMakeBorders(player, oldArea.lowPoints, oldArea.highPoints, true);
 
-		    Residence.getSelectionManager().NewMakeBorders(player, area.lowPoints, area.highPoints, false);
+			Residence.getSelectionManager().NewMakeBorders(player, area.lowPoints, area.highPoints, false);
+		    }
 		}
 		return false;
 	    }
@@ -238,10 +239,10 @@ public class ClaimedResidence {
 	}
 	if (parent == null) {
 	    String collideResidence = Residence.getResidenceManager().checkAreaCollision(newarea, this);
-	    if (collideResidence != null) {
-		if (player != null)
-		    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaCollision", ChatColor.YELLOW + collideResidence));
-		Residence.getSelectionManager().NewMakeBorders(player, oldarea.lowPoints, oldarea.highPoints, true);
+	    if (collideResidence != null && player != null) {
+		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaCollision", ChatColor.YELLOW + collideResidence));
+		CuboidArea area = Residence.getResidenceManager().getByName(collideResidence).getAreaArray()[0];
+		Residence.getSelectionManager().NewMakeBorders(player, area.getLowLoc(), area.highPoints, true);
 		return false;
 	    }
 	} else {
@@ -261,25 +262,28 @@ public class ClaimedResidence {
 	String[] szs = listSubzones();
 	for (String sz : szs) {
 	    ClaimedResidence res = getSubzone(sz);
-	    if (res != null && res != this) {
-		String[] szareas = res.getAreaList();
-		for (String area : szareas) {
-		    if (!newarea.isAreaWithinArea(res.getArea(area))) {
-			boolean good = false;
-			for (CuboidArea arae : getAreaArray()) {
-			    if (arae != oldarea && arae.isAreaWithinArea(res.getArea(area))) {
-				good = true;
-			    }
-			}
-			if (!good) {
-			    res.removeArea(area);
-			}
+	    if (res == null || res == this)
+		continue;
+	    String[] szareas = res.getAreaList();
+	    for (String area : szareas) {
+		if (newarea.isAreaWithinArea(res.getArea(area)))
+		    continue;
+
+		boolean good = false;
+		for (CuboidArea arae : getAreaArray()) {
+		    if (arae != oldarea && arae.isAreaWithinArea(res.getArea(area))) {
+			good = true;
 		    }
 		}
-		if (res.getAreaArray().length == 0) {
-		    removeSubzone(sz);
+		if (!good) {
+		    res.removeArea(area);
 		}
+
 	    }
+	    if (res.getAreaArray().length == 0) {
+		removeSubzone(sz);
+	    }
+
 	}
 	if (!resadmin && player != null) {
 	    if (!this.perms.hasResidencePermission(player, true)) {
@@ -386,8 +390,8 @@ public class ClaimedResidence {
 		    if (res.getAreaArray().length > 0) {
 			CuboidArea oldArea = res.getAreaArray()[0];
 			Residence.getSelectionManager().NewMakeBorders(player, oldArea.lowPoints, oldArea.highPoints, true);
+			Residence.getSelectionManager().NewMakeBorders(player, newArea.lowPoints, newArea.highPoints, false);
 		    }
-		    Residence.getSelectionManager().NewMakeBorders(player, newArea.lowPoints, newArea.highPoints, false);
 
 		}
 		return false;
@@ -792,7 +796,8 @@ public class ClaimedResidence {
     }
 
     public void tpToResidence(Player reqPlayer, final Player targetPlayer, boolean resadmin) {
-	if (!resadmin) {
+	boolean isAdmin = Residence.isResAdminOn(reqPlayer);
+	if (!resadmin && !isAdmin) {
 	    PermissionGroup group = Residence.getPermissionManager().getGroup(reqPlayer);
 	    if (!group.hasTpAccess()) {
 		reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("TeleportDeny"));
@@ -812,7 +817,7 @@ public class ClaimedResidence {
 	    }
 	}
 
-	if (!ResidenceCommandListener.teleportMap.containsKey(targetPlayer.getName())) {
+	if (!ResidenceCommandListener.teleportMap.containsKey(targetPlayer.getName()) && !isAdmin) {
 	    int distance = isSafeTp(reqPlayer);
 	    if (distance > 6) {
 		reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("TeleportConfirm", String.valueOf(distance)));
@@ -821,14 +826,17 @@ public class ClaimedResidence {
 	    }
 	}
 
-	if (Residence.getConfigManager().getTeleportDelay() > 0) {
+	if (Residence.getConfigManager().getTeleportDelay() > 0 && !isAdmin) {
 	    reqPlayer.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("TeleportStarted", this.getName() + "." + Residence.getConfigManager()
 		.getTeleportDelay()));
 	    ResidenceCommandListener.teleportDelayMap.add(reqPlayer.getName());
 	}
 
 	if (tpLoc != null) {
-	    performTp(tpLoc, targetPlayer, reqPlayer, false);
+	    if (!isAdmin)
+		performDelaydTp(tpLoc, targetPlayer, reqPlayer, true);
+	    else
+		performInstantTp(tpLoc, targetPlayer, reqPlayer, true);
 	} else {
 	    CuboidArea area = areas.values().iterator().next();
 	    if (area == null) {
@@ -837,11 +845,15 @@ public class ClaimedResidence {
 		return;
 	    }
 	    final Location targloc = this.getOutsideFreeLoc(area.getHighLoc());
-	    performTp(targloc, targetPlayer, reqPlayer, true);
+	    if (!isAdmin)
+		performDelaydTp(targloc, targetPlayer, reqPlayer, true);
+	    else
+		performInstantTp(targloc, targetPlayer, reqPlayer, true);
+
 	}
     }
 
-    private void performTp(final Location targloc, final Player targetPlayer, Player reqPlayer, final boolean near) {
+    private void performDelaydTp(final Location targloc, final Player targetPlayer, Player reqPlayer, final boolean near) {
 	ResidenceTPEvent tpevent = new ResidenceTPEvent(this, targloc, targetPlayer, reqPlayer);
 	Residence.getServ().getPluginManager().callEvent(tpevent);
 	if (!tpevent.isCancelled()) {
@@ -861,6 +873,19 @@ public class ClaimedResidence {
 
 		}
 	    }, Residence.getConfigManager().getTeleportDelay() * 20L);
+	}
+    }
+
+    private void performInstantTp(final Location targloc, final Player targetPlayer, Player reqPlayer, final boolean near) {
+	ResidenceTPEvent tpevent = new ResidenceTPEvent(this, targloc, targetPlayer, reqPlayer);
+	Residence.getServ().getPluginManager().callEvent(tpevent);
+	if (!tpevent.isCancelled()) {
+	    targetPlayer.teleport(targloc);
+	    if (near)
+		targetPlayer.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TeleportNear"));
+	    else
+		targetPlayer.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TeleportSuccess"));
+
 	}
     }
 

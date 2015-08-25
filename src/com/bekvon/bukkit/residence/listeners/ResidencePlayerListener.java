@@ -262,6 +262,9 @@ public class ResidencePlayerListener implements Listener {
 		    player.sendMessage(ChatColor.GREEN + Residence.getLanguage().getPhrase("SelectPoint", Residence.getLanguage().getPhrase("Secondary")) + ChatColor.RED
 			+ "(" + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + ")" + ChatColor.GREEN + "!");
 		}
+
+		if (Residence.getSelectionManager().hasPlacedBoth(player.getName()))
+		    Residence.getSelectionManager().showSelectionInfoInActionBar(player);
 	    }
 	}
 	if (heldItemId == Residence.getConfigManager().getInfoToolID() && event.getAction() == Action.LEFT_CLICK_BLOCK) {

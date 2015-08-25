@@ -10,6 +10,7 @@ import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
 import com.bekvon.bukkit.residence.utils.ActionBar;
+import com.bekvon.bukkit.residence.utils.Debug;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,16 +52,12 @@ public class SelectionManager {
     public void placeLoc1(Player player, Location loc) {
 	if (loc != null) {
 	    playerLoc1.put(player.getName(), loc);
-	    if (hasPlacedBoth(player.getName()))
-		showSelectionInfoInActionBar(player);
 	}
     }
 
     public void placeLoc2(Player player, Location loc) {
 	if (loc != null) {
 	    playerLoc2.put(player.getName(), loc);
-	    if (hasPlacedBoth(player.getName()))
-		showSelectionInfoInActionBar(player);
 	}
     }
 
@@ -745,19 +742,29 @@ public class SelectionManager {
     }
 
     private Direction getDirection(Player player) {
+
+	int yaw = (int) player.getLocation().getYaw();
+
+	if (yaw < 0)
+	    yaw += 360;
+
+	yaw += 45;
+	yaw %= 360;
+
+	int facing = yaw / 90;
+
 	float pitch = player.getLocation().getPitch();
-	float yaw = player.getLocation().getYaw();
 	if (pitch < -50)
 	    return Direction.UP;
 	if (pitch > 50)
 	    return Direction.DOWN;
-	if ((yaw > 45 && yaw < 135) || (yaw < -45 && yaw > -135))
+	if (facing == 1) // east
 	    return Direction.MINUSX;
-	if ((yaw > 225 && yaw < 315) || (yaw < -225 && yaw > -315))
+	if (facing == 3) // west
 	    return Direction.PLUSX;
-	if ((yaw > 135 && yaw < 225) || (yaw < -135 && yaw > -225))
+	if (facing == 2) // north
 	    return Direction.MINUSZ;
-	if ((yaw < 45 || yaw > 315) || (yaw > -45 || yaw < -315))
+	if (facing == 0) // south
 	    return Direction.PLUSZ;
 	return null;
     }
