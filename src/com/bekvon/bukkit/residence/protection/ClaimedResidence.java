@@ -16,6 +16,7 @@ import com.bekvon.bukkit.residence.itemlist.ItemList.ListType;
 import com.bekvon.bukkit.residence.itemlist.ResidenceItemList;
 import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.text.help.InformationPager;
+import com.bekvon.bukkit.residence.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +43,7 @@ public class ClaimedResidence {
     protected Map<String, ClaimedResidence> subzones;
     protected ResidencePermissions perms;
     protected ResidenceBank bank;
+    protected Double BlockSellPrice = 0.0;
     protected Location tpLoc;
     protected String enterMessage;
     protected String leaveMessage;
@@ -251,8 +253,10 @@ public class ClaimedResidence {
 		ClaimedResidence res = parent.getSubzone(sz);
 		if (res != null && res != this) {
 		    if (res.checkCollision(newarea)) {
-			if (player != null)
+			if (player != null) {
 			    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("AreaSubzoneCollision", ChatColor.YELLOW + sz));
+			    Residence.getSelectionManager().NewMakeBorders(player, res.getAreaArray()[0].lowPoints, res.getAreaArray()[0].highPoints, true);
+			}
 			return false;
 		    }
 		}
@@ -870,7 +874,7 @@ public class ClaimedResidence {
 			targetPlayer.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TeleportNear"));
 		    else
 			targetPlayer.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TeleportSuccess"));
-
+		    return;
 		}
 	    }, Residence.getConfigManager().getTeleportDelay() * 20L);
 	}
@@ -927,6 +931,7 @@ public class ClaimedResidence {
 	root.put("EnterMessage", enterMessage);
 	root.put("LeaveMessage", leaveMessage);
 	root.put("StoredMoney", bank.getStoredMoney());
+	root.put("BlockSellPrice", BlockSellPrice);
 	root.put("BlackList", blacklist.save());
 	root.put("IgnoreList", ignorelist.save());
 	for (Entry<String, CuboidArea> entry : areas.entrySet()) {
@@ -959,6 +964,7 @@ public class ClaimedResidence {
 	res.leaveMessage = (String) root.get("LeaveMessage");
 	if (root.containsKey("StoredMoney"))
 	    res.bank.setStoredMoney((Integer) root.get("StoredMoney"));
+
 	if (root.containsKey("BlackList"))
 	    res.blacklist = ResidenceItemList.load(res, (Map<String, Object>) root.get("BlackList"));
 	if (root.containsKey("IgnoreList"))
@@ -966,6 +972,14 @@ public class ClaimedResidence {
 
 	Map<String, Object> areamap = (Map<String, Object>) root.get("Areas");
 	res.perms = ResidencePermissions.load(res, (Map<String, Object>) root.get("Permissions"));
+
+	if (root.containsKey("BlockSellPrice"))
+	    res.BlockSellPrice = (Double) root.get("BlockSellPrice");
+	else {
+	    PermissionGroup group = Residence.getPermissionManager().getGroup(res.getOwner(), res.getWorld());
+	    res.BlockSellPrice = group.getSellPerBlock();
+	}
+
 	World world = Residence.getServ().getWorld(res.perms.getWorld());
 	if (world == null)
 	    throw new Exception("Cant Find World: " + res.perms.getWorld());
@@ -1090,6 +1104,10 @@ public class ClaimedResidence {
 
     public ResidenceItemList getItemIgnoreList() {
 	return ignorelist;
+    }
+
+    public Double getBlockSellPrice() {
+	return BlockSellPrice;
     }
 
     public ArrayList<Player> getPlayersInResidence() {

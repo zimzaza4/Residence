@@ -33,6 +33,13 @@ Global:
         tnt: true
         monsters: true
         animals: true
+        animalkilling: true
+        mobkilling: true
+        vehicledestroy: true
+        trade: true
+        shear: true
+        leash: true
+        nofly: true
         subzone: true
         healing: true
         piston: true
@@ -62,6 +69,10 @@ Global:
         piston: false
         ignite: false
         firespread: false
+        vehicledestroy: false
+        animalkilling: false
+        shear: false
+        leash: false
     # These are default flags applied to the residence creator of any group.
     CreatorDefault:
         build: true
@@ -69,6 +80,12 @@ Global:
         use: true
         ignite: true
         container: true
+        animalkilling: true
+        mobkilling: true
+        vehicledestroy: true
+        trade: true
+        shear: true
+        leash: true
      # These are default group flags applied to a residence made by a user of any group.
     GroupDefault:
         #default: #group name

@@ -24,6 +24,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.economy.TransactionManager;
 import com.bekvon.bukkit.residence.event.ResidenceCreationEvent;
 import com.bekvon.bukkit.residence.event.ResidenceDeleteEvent;
 import com.bekvon.bukkit.residence.event.ResidenceDeleteEvent.DeleteCause;
@@ -133,6 +134,8 @@ public class ResidenceManager {
     }
 
     public boolean addResidence(Player player, String owner, String name, Location loc1, Location loc2, boolean resadmin) {
+
+	long time = System.currentTimeMillis();
 	if (!Residence.validName(name)) {
 	    if (player != null) {
 		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("InvalidNameCharacters"));
@@ -145,6 +148,7 @@ public class ResidenceManager {
 	    }
 	    return false;
 	}
+	Debug.D("1 " + (System.currentTimeMillis() - time));
 	PermissionGroup group = Residence.getPermissionManager().getGroup(owner, loc1.getWorld().getName());
 	boolean createpermission = group.canCreateResidences() || (player == null ? true : player.hasPermission("residence.create"));
 	if (!createpermission && !resadmin) {
@@ -153,12 +157,14 @@ public class ResidenceManager {
 	    }
 	    return false;
 	}
+	Debug.D("2 " + (System.currentTimeMillis() - time));
 	if (player != null) {
-	    if (getOwnedZoneCount(player.getName()) >= group.getMaxZones() && !resadmin) {
+	    if (!hasMaxZones(player.getName(), group.getMaxZones()) && !resadmin) {
 		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceTooMany"));
 		return false;
 	    }
 	}
+	Debug.D("3 " + (System.currentTimeMillis() - time));
 	CuboidArea newArea = new CuboidArea(loc1, loc2);
 	ClaimedResidence newRes = new ClaimedResidence(owner, loc1.getWorld().getName());
 	newRes.getPermissions().applyDefaultFlags();
@@ -178,6 +184,7 @@ public class ResidenceManager {
 	    }
 	    return false;
 	}
+	newRes.BlockSellPrice = group.getSellPerBlock();
 	if (player != null) {
 	    newRes.addArea(player, newArea, "main", resadmin);
 	} else {
@@ -336,7 +343,10 @@ public class ResidenceManager {
 	    // concurrent modification exception in lease manager... worked
 	    // around for now
 	    Residence.getRentManager().removeRentable(name);
-
+	    if (parent == null && Residence.getConfigManager().enableEconomy() && Residence.getConfigManager().useResMoneyBack()) {
+		int chargeamount = (int) Math.ceil((double) res.getAreaArray()[0].getSize() * res.getBlockSellPrice());
+		TransactionManager.giveEconomyMoney(player, chargeamount);
+	    }
 	} else {
 	    if (player != null) {
 		player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("InvalidResidence"));
@@ -380,6 +390,19 @@ public class ResidenceManager {
 	return count;
     }
 
+    public boolean hasMaxZones(String player, int target) {
+	Collection<ClaimedResidence> set = residences.values();
+	int count = 0;
+	for (ClaimedResidence res : set) {
+	    if (res.getPermissions().getOwner().equalsIgnoreCase(player)) {
+		count++;
+		if (count >= target)
+		    return false;
+	    }
+	}
+	return true;
+    }
+
     public void printAreaInfo(String areaname, Player player) {
 	ClaimedResidence res = this.getByName(areaname);
 	if (res == null) {
@@ -410,6 +433,14 @@ public class ResidenceManager {
 	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("CurrentArea") + ": " + ChatColor.GOLD + aid);
 	}
 	player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Total.Size") + ":" + ChatColor.LIGHT_PURPLE + " " + res.getTotalSize());
+
+	if (Residence.getEconomyManager() != null) {
+	    PermissionGroup group = Residence.getPermissionManager().getGroup(res.getOwner(), res.getWorld());
+	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("TotalWorth", String.valueOf((res.getTotalSize() * group.getCostPerBlock())).replace(
+		".", ",") + "." +
+		String.valueOf(res.getTotalSize() * res.getBlockSellPrice()).replace(".", ",")));
+	}
+
 	if (aid != null) {
 	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("CoordsT") + ": " + ChatColor.LIGHT_PURPLE + Residence.getLanguage().getPhrase(
 		"CoordsTop", res.getAreaByLoc(player.getLocation()).getHighLoc().getBlockX() + "." + res.getAreaByLoc(player.getLocation()).getHighLoc().getBlockY() + "."
@@ -595,7 +626,7 @@ public class ResidenceManager {
 	    reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceGiveLimits"));
 	    return;
 	}
-	if (getOwnedZoneCount(giveplayer.getName()) >= g.getMaxZones() && !resadmin) {
+	if (!hasMaxZones(giveplayer.getName(), g.getMaxZones()) && !resadmin) {
 	    reqPlayer.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceGiveLimits"));
 	    return;
 	}

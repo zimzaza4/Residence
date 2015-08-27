@@ -5,9 +5,11 @@
 
 package com.bekvon.bukkit.residence.text.help;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.bekvon.bukkit.residence.Residence;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,10 +87,24 @@ public class HelpEntry {
 		}
 	    }
 	}
-	if (page < pagecount)
-	    sender.sendMessage(ChatColor.GRAY + "---<" + Residence.getLanguage().getPhrase("NextPage") + ">---");
-	else
-	    sender.sendMessage(ChatColor.GRAY + "-----------------------");
+
+	int NextPage = page + 1;
+	NextPage = page < pagecount ? NextPage : page;
+	int Prevpage = page - 1;
+	Prevpage = page > 1 ? Prevpage : page;
+	String prevCmd = !name.equalsIgnoreCase("res") ? "/res " + name + " ? " + Prevpage : "/res ? " + Prevpage;
+	String prev = "[\"\",{\"text\":\"" + Residence.getLanguage().getPhrase("PrevInfoPage") + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" + prevCmd
+	    + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"" + "<<<" + "\"}]}}}";
+	String nextCmd = !name.equalsIgnoreCase("res") ? "/res " + name + " ? " + NextPage : "/res ? " + NextPage;
+	String next = " {\"text\":\"" + Residence.getLanguage().getPhrase("NextInfoPage") + "\",\"clickEvent\":{\"action\":\"run_command\",\"value\":\"" + nextCmd
+	    + "\"},\"hoverEvent\":{\"action\":\"show_text\",\"value\":{\"text\":\"\",\"extra\":[{\"text\":\"" + ">>>" + "\"}]}}}]";
+
+	Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tellraw " + sender.getName() + " " + prev + "," + next);
+
+//	if (page < pagecount)
+//	    sender.sendMessage(ChatColor.GRAY + "---<" + Residence.getLanguage().getPhrase("NextPage") + ">---");
+//	else
+//	    sender.sendMessage(ChatColor.GRAY + "-----------------------");
     }
 
     public void printHelp(CommandSender sender, int page, String path) {
@@ -164,7 +180,7 @@ public class HelpEntry {
 		if (stringList != null) {
 		    entry.lines = new String[stringList.size()];
 		    for (int i = 0; i < stringList.size(); i++) {
-			entry.lines[i] = "- " + stringList.get(i);
+			entry.lines[i] = "- " + ChatColor.translateAlternateColorCodes('&', stringList.get(i));
 		    }
 		}
 	    }

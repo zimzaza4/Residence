@@ -1132,7 +1132,7 @@ public class ResidenceCommandListener extends Residence {
 	} else if (args.length == 4) {
 	    ClaimedResidence area = rmanager.getByLoc(player.getLocation());
 	    if (area != null) {
-		area.getPermissions().setPlayerFlag(player, args[1], args[2], args[3], resadmin);
+		area.getPermissions().setPlayerFlag(player, args[1], args[2], args[3], resadmin, true);
 	    } else {
 		player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 	    }
@@ -1140,7 +1140,7 @@ public class ResidenceCommandListener extends Residence {
 	} else if (args.length == 5) {
 	    ClaimedResidence area = rmanager.getByName(args[1]);
 	    if (area != null) {
-		area.getPermissions().setPlayerFlag(player, args[2], args[3], args[4], resadmin);
+		area.getPermissions().setPlayerFlag(player, args[2], args[3], args[4], resadmin, true);
 	    } else {
 		player.sendMessage(ChatColor.RED + language.getPhrase("InvalidResidence"));
 	    }

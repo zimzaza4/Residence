@@ -797,11 +797,19 @@ public class Residence extends JavaPlugin {
 
     private void ConvertGroupFile() {
 	File file = new File(this.getDataFolder(), "config.yml");
+	
+	File file_old = new File(this.getDataFolder(), "config_old.yml");
 
 	File newfile = new File(this.getDataFolder(), "groups.yml");
 
 	File newTempFlags = new File(this.getDataFolder(), "flags.yml");
-
+	
+	try {
+	    copy(file, file_old);
+	} catch (IOException e1) {
+	    e1.printStackTrace();
+	}
+	
 	try {
 	    copy(file, newfile);
 	} catch (IOException e1) {

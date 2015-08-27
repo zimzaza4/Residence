@@ -10,8 +10,6 @@ import com.bekvon.bukkit.residence.permissions.PermissionGroup;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
 import com.bekvon.bukkit.residence.protection.CuboidArea;
 import com.bekvon.bukkit.residence.utils.ActionBar;
-import com.bekvon.bukkit.residence.utils.Debug;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -110,14 +108,14 @@ public class SelectionManager {
     }
 
     public static boolean showParticle(Player player, Location Current, boolean error) {
-	if (!error)
+	if (!error) {
 	    Residence.getConfigManager().getSelectedFrame().display(0, 0, 0, 0, 1, Current, player);
-	else
+	} else
 	    Residence.getConfigManager().getOverlapFrame().display(0, 0, 0, 0, 1, Current, player);
 	return false;
     }
 
-    public static boolean showParticleWalls(Player player, Location Current, boolean error) {
+    public static boolean showParticleWalls(final Player player, final Location Current, final boolean error) {
 	if (!error)
 	    Residence.getConfigManager().getSelectedSides().display(0, 0, 0, 0, 1, Current, player);
 	else
@@ -261,14 +259,16 @@ public class SelectionManager {
 	final Boolean EastSide, final Boolean SouthSide, final Boolean WestSide, final Boolean NorthSide, final Boolean TopSide, final Boolean BottomSide,
 	final Location Current, boolean error) {
 
+	int eachCollumn = Residence.getConfigManager().getVisualizerRowSpacing();
+	int eachRow = Residence.getConfigManager().getVisualizerCollumnSpacing();
 	// North wall
 	if (NorthSide) {
 	    Current.setX(OLX);
 	    Current.setY(OLY);
 	    Current.setZ(OLZ);
-	    for (int y = 1; y < TY; y++) {
+	    for (int y = 1; y < TY; y += eachCollumn) {
 		Current.setY(OLY + y);
-		for (int x = 1; x < TX; x++) {
+		for (int x = 1; x < TX; x += eachRow) {
 		    Current.setX(OLX + x);
 		    showParticleWalls(player, Current, error);
 		}
@@ -280,9 +280,9 @@ public class SelectionManager {
 	    Current.setX(OLX);
 	    Current.setY(OLY);
 	    Current.setZ(OLZ + TZ);
-	    for (int y = 1; y < TY; y++) {
+	    for (int y = 1; y < TY; y += eachCollumn) {
 		Current.setY(OLY + y);
-		for (int x = 1; x < TX; x++) {
+		for (int x = 1; x < TX; x += eachRow) {
 		    Current.setX(OLX + x);
 		    showParticleWalls(player, Current, error);
 		}
@@ -294,9 +294,9 @@ public class SelectionManager {
 	    Current.setX(OLX);
 	    Current.setY(OLY);
 	    Current.setZ(OLZ);
-	    for (int y = 1; y < TY; y++) {
+	    for (int y = 1; y < TY; y += eachCollumn) {
 		Current.setY(OLY + y);
-		for (int z = 1; z < TZ; z++) {
+		for (int z = 1; z < TZ; z += eachRow) {
 		    Current.setZ(OLZ + z);
 		    showParticleWalls(player, Current, error);
 		}
@@ -308,9 +308,9 @@ public class SelectionManager {
 	    Current.setX(OLX + TX);
 	    Current.setY(OLY);
 	    Current.setZ(OLZ);
-	    for (int y = 1; y < TY; y++) {
+	    for (int y = 1; y < TY; y += eachCollumn) {
 		Current.setY(OLY + y);
-		for (int z = 1; z < TZ; z++) {
+		for (int z = 1; z < TZ; z += eachRow) {
 		    Current.setZ(OLZ + z);
 		    showParticleWalls(player, Current, error);
 		}
@@ -322,9 +322,9 @@ public class SelectionManager {
 	    Current.setX(OLX);
 	    Current.setY(OLY + TY);
 	    Current.setZ(OLZ);
-	    for (int z = 1; z < TZ; z++) {
+	    for (int z = 1; z < TZ; z += eachCollumn) {
 		Current.setZ(OLZ + z);
-		for (int x = 1; x < TX; x++) {
+		for (int x = 1; x < TX; x += eachRow) {
 		    Current.setX(OLX + x);
 		    showParticleWalls(player, Current, error);
 		}
@@ -336,9 +336,9 @@ public class SelectionManager {
 	    Current.setX(OLX);
 	    Current.setY(OLY);
 	    Current.setZ(OLZ);
-	    for (int z = 1; z < TZ; z++) {
+	    for (int z = 1; z < TZ; z += eachCollumn) {
 		Current.setZ(OLZ + z);
-		for (int x = 1; x < TX; x++) {
+		for (int x = 1; x < TX; x += eachRow) {
 		    Current.setX(OLX + x);
 		    showParticleWalls(player, Current, error);
 		}

@@ -140,7 +140,7 @@ public class Locale {
 	GetConfigString("Language.OwnerNoPermission", "The owner does not have permission for this.", writer, conf, true);
 	GetConfigString("Language.ParentNoPermission", "You don't have permission to make changes to the parent zone.", writer, conf, true);
 	GetConfigString("Language.MessageChange", "Message Set...", writer, conf, true);
-	GetConfigString("Language.FlagSet", "Flag Set...", writer, conf, true);
+	GetConfigString("Language.FlagSet", "&e%1 &2flag set for &e%2 &2to &e%3 &2state", writer, conf, true);
 	GetConfigString("Language.FlagCheckTrue", "Flag %1 applys to player %2 for residence %3, value = %4", writer, conf, true);
 	GetConfigString("Language.FlagCheckFalse", "Flag %1 does not apply to player %2 for residence.", writer, conf, true);
 	GetConfigString("Language.FlagsCleared", "Flags Cleared.", writer, conf, true);
@@ -160,6 +160,7 @@ public class Locale {
 	GetConfigString("Language.BankDeposit", "You deposit %1 into the residence bank.", writer, conf, true);
 	GetConfigString("Language.BankWithdraw", "You withdraw %1 from the residence bank.", writer, conf, true);
 	GetConfigString("Language.MoneyCharged", "Charged %1 to your %2 account.", writer, conf, true);
+	GetConfigString("Language.MoneyAdded", "Got %1 to your %2 account.", writer, conf, true);
 	GetConfigString("Language.MoneyCredit", "Credited %1 to your %2 account.", writer, conf, true);
 	// GetConfigString("Language.RentDisabled", "Rent system is disabled.",
 	// writer, conf, true);
@@ -237,6 +238,7 @@ public class Locale {
 	GetConfigString("Language.PermissionsApply", "Permissions applied to residence.", writer, conf, true);
 	GetConfigString("Language.PhysicalAreas", "Physical Areas", writer, conf, true);
 	GetConfigString("Language.CurrentArea", "Current Area", writer, conf, true);
+	GetConfigString("Language.TotalWorth", "Total worth of residence:&3 %1 (%2)", writer, conf, true);
 	GetConfigString("Language.LeaseExpire", "Lease Expiration", writer, conf, true);
 	GetConfigString("Language.NotOnline", "Target player must be online.", writer, conf, true);
 	GetConfigString("Language.ResidenceGiveLimits", "Cannot give residence to target player, because it is outside the target players limits.", writer, conf, true);
@@ -247,6 +249,8 @@ public class Locale {
 	GetConfigString("Language.ResidenceListAllEmpty", "No Residences exists on the server...", writer, conf, true);
 	GetConfigString("Language.InvalidPage", "Invalid Page...", writer, conf, true);
 	GetConfigString("Language.NextPage", "Next Page", writer, conf, true);
+	GetConfigString("Language.NextInfoPage", "&2| &eNext Page &2>>>", writer, conf, true);
+	GetConfigString("Language.PrevInfoPage", "&2<<< &ePrev Page &2|", writer, conf, true);
 	GetConfigString("Language.RemovePlayersResidences", "Removed all residences belonging to player %1", writer, conf, true);
 	GetConfigString("Language.GenericPage", "Page %1 of %2", writer, conf, true);
 	GetConfigString("Language.ResidenceRentedBy", "Rented by %1", writer, conf, true);
@@ -302,13 +306,33 @@ public class Locale {
 	GetConfigString("Language.CoordsB", "Bottom Coords", writer, conf, true);
 	GetConfigString("Language.TurnOn", "on", writer, conf, true);
 	GetConfigString("Language.TurnOff", "off", writer, conf, true);
+	GetConfigString("Language.LimitsTop", "----------------------------------------", writer, conf, true);
+	GetConfigString("Language.LimitsPGroup", "&7- &ePermissions Group:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsRGroup", "&7- &eResidence Group:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsAdmin", "&7- &eResidence Admin:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsCanCreate", "&7- &eCan Create Residences:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsMaxRes", "&7- &eMax Residences:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsMaxEW", "&7- &eMax East/West Size:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsMaxNS", "&7- &eMax North/South Size:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsMaxUD", "&7- &eMax Up/Down Size:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsMinMax", "&7- &eMin/Max Protection Height:&3 %1 to %2", writer, conf, true);
+	GetConfigString("Language.LimitsMaxSub", "&7- &eMax Subzone Depth:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsEnterLeave", "&7- &eCan Set Enter/Leave Messages:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsNumberOwn", "&7- &eNumber of Residences you own:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsCost", "&7- &eResidence Cost Per Block:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsSell", "&7- &eResidence Sell Cost Per Block:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsFlag", "&7- &eFlag Permissions:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsMaxDays", "&7- &eMax Lease Days:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsLeaseTime", "&7- &eLease Time Given on Renew:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsRenewCost", "&7- &eRenew Cost Per Block:&3 %1", writer, conf, true);
+	GetConfigString("Language.LimitsBottom", "----------------------------------------", writer, conf, true);
 
 	writer.addComment("CommandHelp", "");
 
 	GetConfigString("CommandHelp.Description", "Contains Help for Residence", writer, conf, true);
 	GetConfigString("CommandHelp.SubCommands.res.Description", "Main Residence Command", writer, conf, true);
 	GetConfigArray("CommandHelp.SubCommands.res.Info", Arrays.asList("See the residence wiki for more help.", "Wiki: residencebukkitmod.wikispaces.com",
-	    "Use /[command] ? <page> to view more help information."), writer, conf, true);
+	    "Use /res [command] ? <page> to view more help information."), writer, conf, true);
 
 	GetConfigString("CommandHelp.SubCommands.res.SubCommands.select.Description", "Selection Commands", writer, conf, true);
 	GetConfigArray("CommandHelp.SubCommands.res.SubCommands.select.Info",
@@ -472,46 +496,52 @@ public class Locale {
 	GetConfigString("CommandHelp.SubCommands.res.SubCommands.flags.Description", "List of flags", writer, conf, true);
 	GetConfigArray("CommandHelp.SubCommands.res.SubCommands.flags.Info",
 	    Arrays.asList("For flag values, usually true allows the action, and false denys the action.",
-		"build - allows or denys building",
-		"use - allows or denys use of doors, lever, buttons, etc...",
-		"move - allows or denys movement in the residence.",
-		"container - allows or denys use of furnaces, chests, dispensers, etc...",
-		"trusted - Gives build, use, move, container and tp flags",
-		"place - allows or denys only placement of blocks, overrides the build flag.",
-		"destroy - allows or denys only destruction of blocks, overrides the build flag.",
-		"pvp - allow or deny pvp in the residence",
-		"tp - allow or disallow teleporting to the residence.",
-		"admin - gives a player permission to change flags on a residence.",
-		"subzone - allow a player to make subzones in the residence.",
-		"monsters - allows or denys monster spawns",
-		"animals - allows or denys animal spawns.",
-		"healing - setting to true makes the residence heal its occupants",
-		"tnt - allow or deny tnt explosions",
-		"creeper - allow or deny creeper explosions",
-		"ignite - allows or denys fire ignition.",
-		"firespread - allows or denys fire spread.",
-		"bucket - allow or deny bucket use.",
-		"flow - allows or denys liquid flow.",
-		"lavaflow - allows or denys lava flow, overrides flow",
-		"waterflow - allows or denys water flow, overrides flow",
-		"damage - allows or denys all entity damage within the residence.",
-		"piston - allow or deny pistons from pushing or pulling blocks in the residence.",
-		"hidden - hides residence from list or listall commands.",
-		"cake - allows or denys players to eat cake",
-		"lever - allows or denys players to use levers",
-		"button - allows or denys players to use buttons",
-		"diode - allows or denys players to use redstone repeaters",
-		"door - allows or denys players to use doors and trapdoors",
-		"table - allows or denys players to use workbenches",
-		"enchant - allows or denys players to use enchanting tables",
-		"brew - allows or denys players to use brewing stands",
-		"bed - allows or denys players to use beds",
-		"button - allows or denys players to use buttons",
-		"pressure - allows or denys players to use pressure plates",
-		"note - allows or denys players to use note blocks",
-		"redstone - Gives lever, diode, button, pressure, note flags",
-		"craft - Gives table, enchant, brew flags",
-		"burn - allows or denys Mob combustion in residences"),
+		"&2build &3- &eallows or denys building",
+		"&2use &3- &eallows or denys use of doors, lever, buttons, etc...",
+		"&2move &3- &eallows or denys movement in the residence.",
+		"&2container &3- &eallows or denys use of furnaces, chests, dispensers, etc...",
+		"&2trusted &3- &eGives build, use, move, container and tp flags",
+		"&2place &3- &eallows or denys only placement of blocks, overrides the build flag.",
+		"&2destroy &3- &eallows or denys only destruction of blocks, overrides the build flag.",
+		"&2pvp &3- &eallow or deny pvp in the residence",
+		"&2tp &3- &eallow or disallow teleporting to the residence.",
+		"&2admin &3- &egives a player permission to change flags on a residence.",
+		"&2subzone &3- &eallow a player to make subzones in the residence.",
+		"&2monsters &3- &eallows or denys monster spawns",
+		"&2animals &3- &eallows or denys animal spawns.",
+		"&2animalkilling &3- &eallows or denys animal killing.",
+		"&2mobkilling &3- &eallows or denys mob killing.",
+		"&2nofly &3- &eallows or denys fly in residence.",
+		"&2vehicledestroy &3- &eallows or denys vehicle destroy.",
+		"&2shear &3- &eallows or denys sheep shear.",
+		"&2leash &3- &eallows or denys aninal leash.",
+		"&2healing &3- &esetting to true makes the residence heal its occupants",
+		"&2tnt &3- &eallow or deny tnt explosions",
+		"&2creeper &3- &eallow or deny creeper explosions",
+		"&2ignite &3- &eallows or denys fire ignition.",
+		"&2firespread &3- &eallows or denys fire spread.",
+		"&2bucket &3- &eallow or deny bucket use.",
+		"&2flow &3- &eallows or denys liquid flow.",
+		"&2lavaflow &3- &eallows or denys lava flow, overrides flow",
+		"&2waterflow &3- &eallows or denys water flow, overrides flow",
+		"&2damage &3- &eallows or denys all entity damage within the residence.",
+		"&2piston &3- &eallow or deny pistons from pushing or pulling blocks in the residence.",
+		"&2hidden &3- &ehides residence from list or listall commands.",
+		"&2cake &3- &eallows or denys players to eat cake",
+		"&2lever &3- &eallows or denys players to use levers",
+		"&2button &3- &eallows or denys players to use buttons",
+		"&2diode &3- &eallows or denys players to use redstone repeaters",
+		"&2door &3- &eallows or denys players to use doors and trapdoors",
+		"&2table &3- &eallows or denys players to use workbenches",
+		"&2enchant &3- &eallows or denys players to use enchanting tables",
+		"&2brew &3- &eallows or denys players to use brewing stands",
+		"&2bed &3- &eallows or denys players to use beds",
+		"&2button &3- &eallows or denys players to use buttons",
+		"&2pressure &3- &eallows or denys players to use pressure plates",
+		"&2note &3- &eallows or denys players to use note blocks",
+		"&2redstone &3- &eGives lever, diode, button, pressure, note flags",
+		"&2craft &3- &eGives table, enchant, brew flags",
+		"&2burn &3- &eallows or denys Mob combustion in residences"),
 	    writer, conf, true);
 
 	GetConfigString("CommandHelp.SubCommands.res.SubCommands.list.Description", "List Residences", writer, conf, true);

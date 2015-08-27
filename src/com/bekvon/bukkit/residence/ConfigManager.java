@@ -30,6 +30,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class ConfigManager {
     protected String defaultGroup;
     protected boolean useLeases;
+    protected boolean ResMoneyBack;
     protected boolean enableEconomy;
     protected boolean adminsOnly;
     protected boolean allowEmptyResidences;
@@ -50,6 +51,8 @@ public class ConfigManager {
     protected int MinimalResY;
     protected int MinimalResZ;
     protected int TeleportDelay;
+    protected int VisualizerRowSpacing;
+    protected int VisualizerCollumnSpacing;
     protected boolean flagsInherit;
     protected ChatColor chatColor;
     protected boolean chatEnable;
@@ -190,7 +193,7 @@ public class ConfigManager {
 	TeleportDelay = GetConfigInt("Global.Tp.TeleportDelay", 3, writer, conf);
 
 	writer.addComment("Global.Size.MinimalSize", "Minimal size of residence in blocks", "1000 is 10x10x10 residence size");
-	MinimalResSize = GetConfigInt("Global.Size.MinimalSize", 1000, writer, conf);
+	MinimalResSize = GetConfigInt("Global.Size.MinimalSize", 100, writer, conf);
 	MinimalResX = GetConfigInt("Global.Size.MinimalX", 10, writer, conf);
 	MinimalResY = GetConfigInt("Global.Size.MinimalY", 10, writer, conf);
 	MinimalResZ = GetConfigInt("Global.Size.MinimalZ", 10, writer, conf);
@@ -203,7 +206,10 @@ public class ConfigManager {
 
 	writer.addComment("Global.UseLeaseSystem", "Enable / Disable the Lease System.");
 	useLeases = GetConfigBoolean("Global.UseLeaseSystem", false, writer, conf);
-
+	
+	writer.addComment("Global.ResMoneyBack", "Enable / Disable money returning on residence removal.");
+	ResMoneyBack = GetConfigBoolean("Global.ResMoneyBack", false, writer, conf);
+	
 	writer.addComment("Global.LeaseCheckInterval", "The interval, in minutes, between residence lease checks (if leases are enabled).");
 	leaseCheckInterval = GetConfigInt("Global.LeaseCheckInterval", 10, writer, conf);
 
@@ -290,6 +296,14 @@ public class ConfigManager {
 	VisualizerShowFor = GetConfigInt("Global.Visualizer.ShowFor", 5000, writer, conf);
 	writer.addComment("Global.Visualizer.updateInterval", "How often in miliseconds update particles for player");
 	VisualizerUpdateInterval = GetConfigInt("Global.Visualizer.updateInterval", 20, writer, conf);
+	writer.addComment("Global.Visualizer.RowSpacing", "Spacing in blocks between particle effects for rows");
+	VisualizerRowSpacing = GetConfigInt("Global.Visualizer.RowSpacing", 2, writer, conf);
+	if (VisualizerRowSpacing < 1)
+	    VisualizerRowSpacing = 1;
+	writer.addComment("Global.Visualizer.CollumnSpacing", "Spacing in blocks between particle effects for collums");
+	VisualizerCollumnSpacing = GetConfigInt("Global.Visualizer.CollumnSpacing", 2, writer, conf);
+	if (VisualizerCollumnSpacing < 1)
+	    VisualizerCollumnSpacing = 1;
 	writer.addComment("Global.Visualizer.Selected",
 	    "Particle effect names. Posible: explode, largeexplode, hugeexplosion, fireworksSpark, splash, wake, crit, magicCrit",
 	    " smoke, largesmoke, spell, instantSpell, mobSpell, mobSpellAmbient, witchMagic, dripWater, dripLava, angryVillager, happyVillager, townaura",
@@ -359,6 +373,14 @@ public class ConfigManager {
 	return VisualizerShowFor;
     }
 
+    public int getVisualizerRowSpacing() {
+	return VisualizerRowSpacing;
+    }
+
+    public int getVisualizerCollumnSpacing() {
+	return VisualizerCollumnSpacing;
+    }
+
     public int getVisualizerUpdateInterval() {
 	return VisualizerUpdateInterval;
     }
@@ -421,6 +443,10 @@ public class ConfigManager {
 
     public boolean useLeases() {
 	return useLeases;
+    }
+    
+    public boolean useResMoneyBack() {
+	return ResMoneyBack;
     }
 
     public boolean allowAdminsOnly() {

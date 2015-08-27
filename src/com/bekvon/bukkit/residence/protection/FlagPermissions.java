@@ -187,6 +187,8 @@ public class FlagPermissions {
 	addFlagToFlagGroup("trusted", "move");
 	addFlagToFlagGroup("trusted", "leash");
 	addFlagToFlagGroup("trusted", "animalkilling");
+	addFlagToFlagGroup("trusted", "mobkilling");
+	addFlagToFlagGroup("trusted", "shear");
 	addFlagToFlagGroup("fire", "ignite");
 	addFlagToFlagGroup("fire", "firespread");
 	addMaterialToUseFlag(Material.DIODE, "diode");
@@ -211,6 +213,7 @@ public class FlagPermissions {
 	addMaterialToUseFlag(Material.FENCE_GATE, "door");
 	addMaterialToUseFlag(Material.NETHER_FENCE, "door");
 	addMaterialToUseFlag(Material.TRAP_DOOR, "door");
+	addMaterialToUseFlag(Material.IRON_TRAPDOOR, "door");
 	addMaterialToUseFlag(Material.ENCHANTMENT_TABLE, "enchant");
 	addMaterialToUseFlag(Material.STONE_BUTTON, "button");
 	addMaterialToUseFlag(Material.LEVER, "lever");
