@@ -101,7 +101,7 @@ public class ResidenceEntityListener implements Listener {
 	}
     }
 
-    private boolean isMonster(Entity ent) {
+    public static boolean isMonster(Entity ent) {
 	return (ent instanceof Monster || ent instanceof Slime || ent instanceof Ghast);
     }
 
@@ -150,7 +150,7 @@ public class ResidenceEntityListener implements Listener {
 	    return;
 
 	if (!res.getPermissions().playerHas(cause.getName(), "animalkilling", true)) {
-	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "AnimalKilling." + res.getName()));
+	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", "AnimalKilling." + res.getName()));
 	    event.setCancelled(true);
 	}
     }
@@ -190,7 +190,7 @@ public class ResidenceEntityListener implements Listener {
 	    return;
 
 	if (!res.getPermissions().playerHas(cause.getName(), "vehicledestroy", true)) {
-	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "vehicledestroy." + res.getName()));
+	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", "vehicledestroy." + res.getName()));
 	    event.setCancelled(true);
 	}
     }
@@ -230,7 +230,7 @@ public class ResidenceEntityListener implements Listener {
 	    return;
 
 	if (!res.getPermissions().playerHas(cause.getName(), "mobkilling", true)) {
-	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "MobKilling." + res.getName()));
+	    cause.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", "MobKilling." + res.getName()));
 	    event.setCancelled(true);
 	}
     }
@@ -253,7 +253,7 @@ public class ResidenceEntityListener implements Listener {
 	    return;
 
 	if (!res.getPermissions().playerHas(player.getName(), "leash", true)) {
-	    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "Leash." + res.getName()));
+	    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("FlagDeny", "Leash." + res.getName()));
 	    event.setCancelled(true);
 	}
     }

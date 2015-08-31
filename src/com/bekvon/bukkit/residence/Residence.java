@@ -110,6 +110,9 @@ public class Residence extends JavaPlugin {
     protected static int leaseBukkitId = -1;
     protected static int rentBukkitId = -1;
     protected static int healBukkitId = -1;
+
+    protected static int DespawnMobsBukkitId = -1;
+
     protected static int autosaveBukkitId = -1;
     protected static VersionChecker versionChecker;
     protected static boolean initsuccess = false;
@@ -126,6 +129,13 @@ public class Residence extends JavaPlugin {
 	    plistener.doHeals();
 	}
     };
+
+    private Runnable DespawnMobs = new Runnable() {
+	public void run() {
+	    plistener.DespawnMobs();
+	}
+    };
+
     private Runnable rentExpire = new Runnable() {
 	public void run() {
 	    rentmanager.checkCurrentRents();
@@ -177,6 +187,9 @@ public class Residence extends JavaPlugin {
     public void onDisable() {
 	server.getScheduler().cancelTask(autosaveBukkitId);
 	server.getScheduler().cancelTask(healBukkitId);
+
+	server.getScheduler().cancelTask(DespawnMobsBukkitId);
+
 	if (cmanager.useLeases()) {
 	    server.getScheduler().cancelTask(leaseBukkitId);
 	}
@@ -379,6 +392,10 @@ public class Residence extends JavaPlugin {
 	    autosaveInt = autosaveInt * 60 * 20;
 	    autosaveBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, autoSave, autosaveInt, autosaveInt);
 	    healBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, doHeals, 20, 20);
+	    if (Residence.getConfigManager().AutoMobRemoval())
+		DespawnMobsBukkitId = server.getScheduler().scheduleSyncRepeatingTask(this, DespawnMobs, 20 * Residence.getConfigManager().AutoMobRemovalInterval(), 20
+		    * Residence.getConfigManager().AutoMobRemovalInterval());
+
 	    if (cmanager.useLeases()) {
 		int leaseInterval = cmanager.getLeaseCheckInterval();
 		if (leaseInterval < 1) {
@@ -797,19 +814,19 @@ public class Residence extends JavaPlugin {
 
     private void ConvertGroupFile() {
 	File file = new File(this.getDataFolder(), "config.yml");
-	
+
 	File file_old = new File(this.getDataFolder(), "config_old.yml");
 
 	File newfile = new File(this.getDataFolder(), "groups.yml");
 
 	File newTempFlags = new File(this.getDataFolder(), "flags.yml");
-	
+
 	try {
 	    copy(file, file_old);
 	} catch (IOException e1) {
 	    e1.printStackTrace();
 	}
-	
+
 	try {
 	    copy(file, newfile);
 	} catch (IOException e1) {

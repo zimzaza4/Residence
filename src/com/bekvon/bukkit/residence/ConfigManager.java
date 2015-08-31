@@ -71,6 +71,8 @@ public class ConfigManager {
     protected boolean showIntervalMessages;
     protected boolean ShowNoobMessage;
     protected boolean spoutEnable;
+    protected boolean AutoMobRemoval;
+    protected int AutoMobRemovalInterval;
     protected boolean enableLeaseMoneyAccount;
     protected boolean enableDebug = false;
     protected boolean versionCheck;
@@ -333,7 +335,14 @@ public class ConfigManager {
 	    OverlapSides = ParticleEffects.FLAME;
 	    Bukkit.getConsoleSender().sendMessage("Can't find effect for Selected Sides with this name, it was set to default");
 	}
-
+	
+	writer.addComment("Global.AutoMobRemoval",
+	    "Default = false. Enabling this, residences with flag nomobs will be cleared from monsters in regular intervals.","This is quite heavy on server side, so enable only if you really need this feature");
+	AutoMobRemoval = GetConfigBoolean("Global.AutoMobRemoval.Use", false, writer, conf);
+	writer.addComment("Global.AutoMobRemoval.Interval",
+	    "How often in seconds to check for monsters in residences. Keep it at reasonable amount");
+	AutoMobRemovalInterval = GetConfigInt("Global.AutoMobRemoval.Interval", 3, writer, conf);
+	
 	enforceAreaInsideArea = GetConfigBoolean("Global.EnforceAreaInsideArea", false, writer, conf);
 	spoutEnable = GetConfigBoolean("Global.EnableSpout", false, writer, conf);
 	enableLeaseMoneyAccount = GetConfigBoolean("Global.EnableLeaseMoneyAccount", true, writer, conf);
@@ -547,6 +556,14 @@ public class ConfigManager {
 
     public boolean enableSpout() {
 	return spoutEnable;
+    }
+    
+    public boolean AutoMobRemoval() {
+	return AutoMobRemoval;
+    }
+    
+    public int AutoMobRemovalInterval() {
+	return AutoMobRemovalInterval;
     }
 
     public boolean enableLeaseMoneyAccount() {

@@ -278,6 +278,10 @@ public class Locale {
 	GetConfigString("Language.Size", "Size", writer, conf, true);
 	GetConfigString("Language.Expanding", "Expanding", writer, conf, true);
 	GetConfigString("Language.Contracting", "Contracting", writer, conf, true);
+	GetConfigString("Language.North", "North", writer, conf, true);
+	GetConfigString("Language.West", "West", writer, conf, true);
+	GetConfigString("Language.South", "South", writer, conf, true);
+	GetConfigString("Language.East", "East", writer, conf, true);
 	GetConfigString("Language.Shifting", "Shifting", writer, conf, true);
 	GetConfigString("Language.Up", "Up", writer, conf, true);
 	GetConfigString("Language.Down", "Down", writer, conf, true);

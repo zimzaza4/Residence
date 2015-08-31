@@ -20,6 +20,7 @@ import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
+import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -656,7 +657,7 @@ public class ResidencePlayerListener implements Listener {
 		return;
 		// Preventing fly in residence only when player has move permission
 	    } else if (player.isFlying()) {
-		if (!res.getPermissions().playerHas(pname, "nofly", true) && !Residence.isResAdminOn(player) && !player.hasPermission("residence.nofly.bypass")) {
+		if (res.getPermissions().playerHas(pname, "nofly", false) && !Residence.isResAdminOn(player) && !player.hasPermission("residence.nofly.bypass")) {
 		    Location lc = player.getLocation();
 		    Location location = new Location(lc.getWorld(), lc.getX(), lc.getBlockY(), lc.getZ());
 		    location.setPitch(lc.getPitch());
@@ -670,10 +671,14 @@ public class ResidencePlayerListener implements Listener {
 			    location.setY(from - i + 1);
 			    break;
 			}
-			if (i >= maxH) {
+			if (location.getBlockY() <= 0) {
 			    Location lastLoc = lastOutsideLoc.get(pname);
 			    if (lastLoc != null)
 				player.teleport(lastLoc);
+			    else
+				player.teleport(res.getOutsideFreeLoc(loc));
+
+			    player.sendMessage(ChatColor.RED + Residence.getLanguage().getPhrase("ResidenceFlagDeny", "Fly." + orres.getName()));
 			    return;
 			}
 		    }
@@ -780,6 +785,34 @@ public class ResidencePlayerListener implements Listener {
 		double health = damage.getHealth();
 		if (health < player.getMaxHealth() && !player.isDead()) {
 		    player.setHealth(health + 1);
+		}
+	    }
+	} catch (Exception ex) {
+	}
+    }
+
+    public void DespawnMobs() {
+	try {
+	    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+		String resname = Residence.getPlayerListener().getCurrentResidenceName(player.getName());
+
+		if (resname == null)
+		    continue;
+
+		ClaimedResidence res = null;
+		res = Residence.getResidenceManager().getByName(resname);
+
+		if (!res.getPermissions().has("nomobs", false))
+		    continue;
+
+		List<Entity> entities = Bukkit.getServer().getWorld(res.getWorld()).getEntities();
+		for (Entity ent : entities) {
+		    if (!ResidenceEntityListener.isMonster(ent))
+			continue;
+		    if (res.containsLoc(ent.getLocation())) {
+			Monster monster = (Monster) ent;
+			monster.remove();
+		    }
 		}
 	    }
 	} catch (Exception ex) {

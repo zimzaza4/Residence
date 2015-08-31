@@ -602,9 +602,9 @@ public class SelectionManager {
 		int oldy2 = area.getLowLoc().getBlockY();
 		oldy2 = oldy2 + amount;
 		area.getLowLoc().setY(oldy2);
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.Up") + "...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.Up") + " (" + amount + ")");
 	    } else
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.Up") + "...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.Up") + " (" + amount + ")");
 	}
 	if (d == Direction.DOWN) {
 	    int oldy = area.getLowLoc().getBlockY();
@@ -618,9 +618,9 @@ public class SelectionManager {
 		int oldy2 = area.getHighLoc().getBlockY();
 		oldy2 = oldy2 - amount;
 		area.getHighLoc().setY(oldy2);
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.Down") + "...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.Down") + " (" + amount + ")");
 	    } else
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.Down") + "...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.Down") + " (" + amount + ")");
 	}
 	if (d == Direction.MINUSX) {
 	    int oldx = area.getLowLoc().getBlockX();
@@ -630,9 +630,9 @@ public class SelectionManager {
 		int oldx2 = area.getHighLoc().getBlockX();
 		oldx2 = oldx2 - amount;
 		area.getHighLoc().setX(oldx2);
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting") + " -X...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.West") + " (" + amount + ")");
 	    } else
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " -X...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.West") + " (" + amount + ")");
 	}
 	if (d == Direction.PLUSX) {
 	    int oldx = area.getHighLoc().getBlockX();
@@ -642,9 +642,9 @@ public class SelectionManager {
 		int oldx2 = area.getLowLoc().getBlockX();
 		oldx2 = oldx2 + amount;
 		area.getLowLoc().setX(oldx2);
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting") + " +X...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.East") + " (" + amount + ")");
 	    } else
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " +X...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.East") + " (" + amount + ")");
 	}
 	if (d == Direction.MINUSZ) {
 	    int oldz = area.getLowLoc().getBlockZ();
@@ -654,9 +654,9 @@ public class SelectionManager {
 		int oldz2 = area.getHighLoc().getBlockZ();
 		oldz2 = oldz2 - amount;
 		area.getHighLoc().setZ(oldz2);
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting") + " -Z...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.North") + " (" + amount + ")");
 	    } else
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " -Z...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.North") + " (" + amount + ")");
 	}
 	if (d == Direction.PLUSZ) {
 	    int oldz = area.getHighLoc().getBlockZ();
@@ -666,9 +666,9 @@ public class SelectionManager {
 		int oldz2 = area.getLowLoc().getBlockZ();
 		oldz2 = oldz2 + amount;
 		area.getLowLoc().setZ(oldz2);
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting") + " +Z...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Shifting.South") + " (" + amount + ")");
 	    } else
-		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " +Z...");
+		player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.South") + " (" + amount + ")");
 	}
 	playerLoc1.put(player.getName(), area.getHighLoc());
 	playerLoc2.put(player.getName(), area.getLowLoc());
@@ -693,31 +693,31 @@ public class SelectionManager {
 		oldy = MAX_HEIGHT;
 	    }
 	    area.getHighLoc().setY(oldy);
-	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.Up") + "...");
+	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Contracting.Down") + " (" + amount + ")");
 	    break;
 	case MINUSX:
 	    int oldx = area.getHighLoc().getBlockX();
 	    oldx = oldx - amount;
 	    area.getHighLoc().setX(oldx);
-	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " +X...");
+	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Contracting.West") + " (" + amount + ")");
 	    break;
 	case MINUSZ:
 	    int oldz = area.getHighLoc().getBlockZ();
 	    oldz = oldz - amount;
 	    area.getHighLoc().setZ(oldz);
-	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " +Z...");
+	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Contracting.North") + " (" + amount + ")");
 	    break;
 	case PLUSX:
 	    oldx = area.getLowLoc().getBlockX();
 	    oldx = oldx + amount;
 	    area.getLowLoc().setX(oldx);
-	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " -X...");
+	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Contracting.East") + " (" + amount + ")");
 	    break;
 	case PLUSZ:
 	    oldz = area.getLowLoc().getBlockZ();
 	    oldz = oldz + amount;
 	    area.getLowLoc().setZ(oldz);
-	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding") + " -Z...");
+	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Contracting.South") + " (" + amount + ")");
 	    break;
 	case UP:
 	    oldy = area.getLowLoc().getBlockY();
@@ -727,7 +727,7 @@ public class SelectionManager {
 		oldy = MIN_HEIGHT;
 	    }
 	    area.getLowLoc().setY(oldy);
-	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Expanding.Down") + "...");
+	    player.sendMessage(ChatColor.YELLOW + Residence.getLanguage().getPhrase("Contracting.Up") + " (" + amount + ")");
 	    break;
 	default:
 	    break;

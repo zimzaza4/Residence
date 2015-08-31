@@ -148,7 +148,7 @@ public class FlagPermissions {
 	addFlag("leash");
 	addFlag("shear");
 	addFlag("nofly");
-
+	
 	addResidenceOnlyFlag("trample");
 	addResidenceOnlyFlag("pvp");
 	addResidenceOnlyFlag("fireball");
@@ -170,6 +170,10 @@ public class FlagPermissions {
 	addResidenceOnlyFlag("spread");
 	addResidenceOnlyFlag("hidden");
 	addResidenceOnlyFlag("witherdamage");
+
+	// prevents from mobs entering residence
+	addResidenceOnlyFlag("nomobs");
+	
 	addPlayerOrGroupOnlyFlag("admin");
 	addFlagToFlagGroup("redstone", "note");
 	addFlagToFlagGroup("redstone", "pressure");
